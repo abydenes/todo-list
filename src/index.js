@@ -7,16 +7,17 @@ class Todo {
     this.priority = priority;
   }
 }
-
-const todoLibrary = [];
+const defaultProject = [];
+const project2 = []
+let project = defaultProject;
 
 function getTodoFromForm() {
   const form = document.querySelector("form");
   const todoName = document.getElementById("todo-name").value;
   const todoDate = document.getElementById("todo-date").value;
   const todoPriority = document.getElementById("todo-priority").value;
-  addTodoToLibrary(todoLibrary, todoName, todoDate, todoPriority);
-  displayTodos(todoLibrary);
+  addTodoToLibrary(project, todoName, todoDate, todoPriority);
+  displayTodos(project);
   form.reset();
 }
 
@@ -60,24 +61,22 @@ function displayTodos(project) {
 todoContainer.addEventListener("click", (e) => {
   let i = e.target.parentElement.dataset.index;
   isDelete(e, i);
-  displayTodos(todoLibrary);
-  console.log(todoLibrary);
+  displayTodos(project);
 });
 
 function isDelete(e, i) {
   if (e.target.classList.contains("delete-todo")) {
     e.target.parentElement.remove();
-    todoLibrary.splice(i, 1);
+    project.splice(i, 1);
   }
 }
 const modalForm = document.querySelector(".modal-form");
 modalForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  getTodoFromForm();
-  console.log(todoLibrary);
+  getTodoFromForm(project);
 });
 
-function cleanContainer() {
+function cleanTodoContainer() {
   const container = document.querySelector(".todo-container");
   container.innerHTML = "";
 }
@@ -86,9 +85,9 @@ const sidebar = document.querySelector(".sidebar");
 
 sidebar.addEventListener("click", (e) => {
   if (e.target.classList.contains("project-button")) {
-    const project = e.target.textContent;
-    cleanContainer();
-    displayTodos(todoLibrary);
+    const projectName = e.target.textContent;
+    cleanTodoContainer();
+    displayTodos(projectName);
   }
 
   if (e.target.classList.contains("new-project-button")) {
@@ -99,7 +98,6 @@ sidebar.addEventListener("click", (e) => {
     projects.appendChild(pbtn);
   }
 });
-
 
 // MODAL
 const modal = document.querySelector("#modal");
