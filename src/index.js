@@ -8,15 +8,12 @@ class TodoList {
   addProject(project) {
     this.projects.push(project)
   }
-
   getProject(projectName) {
     return this.projects.find(project => project.name === projectName)
   }
-
   updateProject(projectName, newName) {
     this.projects.splice(this.projects.indexOf(projectName), 1, newName)
   }
-
   removeProject(projectName) {
     this.projects.splice(this.projects.indexOf(projectName), 1)
   }
@@ -31,15 +28,12 @@ class Project {
   addTodo(todo) {
     this.todos.push(todo)
   }
-
   getTodo(todoName) {
     return this.todos.find(todo => todo.name === todoName)
   }
-
   updateTodo(todoName, newName) {
     this.todos.splice(todos.indexOf(todoName), 1, newName)
   }
-
   removeTodo(todoName) {
     this.todos.splice(todos.indexOf(todoName), 1)
   }
@@ -53,26 +47,29 @@ class Todo {
   }
 }
 
+
 const todolist = new TodoList()
 const defaultProject = new Project("defaultProject")
-const todo1 = new Todo("eng homework", "12.12.2022", "Important")
+const school = new Project("school")
+const todo1 = new Todo("study js", "12.12.2022", "Important")
+const todo2 = new Todo("math hw", "09.01.2023", "Important")
 
 defaultProject.addTodo(todo1)
+school.addTodo(todo2)
 todolist.addProject(defaultProject)
-
-console.log(todo1)
-console.log(defaultProject)
-console.log(todolist)
+todolist.addProject(school)
 
 
-function getTodoFromForm() {
+
+let currentProject = defaultProject
+
+function getTodoFromForm(project) {
   const form = document.querySelector("form");
   const name = document.getElementById("todo-name").value;
   const date = document.getElementById("todo-date").value;
   const priority = document.getElementById("todo-priority").value;
 
-  // defaultProject.addTask(new Todo(name, date, priority))
-  console.log()
+  project.addTodo(new Todo(name, date, priority))
   form.reset();
 }
 
@@ -80,8 +77,10 @@ function getTodoFromForm() {
 const todoContainer = document.querySelector(".todo-container");
 
 function displayTodos(project) {
+  const h2 = document.querySelector(".project-name")
+  h2.textContent = project.name
   todoContainer.innerHTML = "";
-  for (let i = 0; i < project.length; i++) {
+  for (let i = 0; i < project.todos.length; i++) {
     const outerDiv = document.createElement("div");
     outerDiv.classList.add("todo");
     const innerDiv = document.createElement("div");
@@ -94,9 +93,11 @@ function displayTodos(project) {
     const closeButton = document.createElement("span");
     closeButton.innerHTML = "&times;";
     closeButton.classList.add("delete-todo");
+    // console.log(project.todos[i])
 
-    nameButton.textContent = ``;
-    dateButton.textContent = ``;
+    nameButton.textContent = `${project.todos[i].name}`;
+    dateButton.textContent = `${project.todos[i].dueDate}`;
+
 
     innerDiv.appendChild(input);
     innerDiv.appendChild(nameButton);
@@ -113,19 +114,20 @@ function displayTodos(project) {
 todoContainer.addEventListener("click", (e) => {
   let i = e.target.parentElement.dataset.index;
   isDelete(e, i);
-  displayTodos();
+  displayTodos(currentProject);
 });
 
 function isDelete(e, i) {
   if (e.target.classList.contains("delete-todo")) {
     e.target.parentElement.remove();
-    project.splice(i, 1);
+    // currentProject.removeTodo()
   }
 }
 const modalForm = document.querySelector(".modal-form");
 modalForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  getTodoFromForm();
+  getTodoFromForm(currentProject);
+  displayTodos(currentProject)
 });
 
 function cleanTodoContainer() {
@@ -137,9 +139,11 @@ const sidebar = document.querySelector(".sidebar");
 
 sidebar.addEventListener("click", (e) => {
   if (e.target.classList.contains("project-button")) {
-    const projectName = e.target.textContent;
     cleanTodoContainer();
-    displayTodos(projectName);
+    currentProject = todolist.getProject(e.target.textContent) 
+    displayTodos(currentProject);
+
+    console.log(currentProject)
   }
 
   if (e.target.classList.contains("new-project-button")) {
@@ -148,7 +152,9 @@ sidebar.addEventListener("click", (e) => {
     pbtn.classList.add("project-button");
     const pbtnText = prompt("project name?")
 
+    todolist.addProject(new Project(pbtnText))
 
+    console.log(todolist.projects)
     pbtn.textContent = pbtnText;
     projects.appendChild(pbtn);
   }
