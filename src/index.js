@@ -1,29 +1,81 @@
 import "./style.css";
 
-class Todo {
-  constructor(todoName, todoDate, priority) {
-    this.todoName = todoName;
-    this.todoDate = todoDate;
-    this.priority = priority;
+class TodoList {
+  constructor() {
+    this.projects = []
+  }
+
+  addProject(project) {
+    this.projects.push(project)
+  }
+
+  getProject(projectName) {
+    return this.projects.find(project => project.name === projectName)
+  }
+
+  updateProject(projectName, newName) {
+    this.projects.splice(this.projects.indexOf(projectName), 1, newName)
+  }
+
+  removeProject(projectName) {
+    this.projects.splice(this.projects.indexOf(projectName), 1)
   }
 }
-const defaultProject = [];
-const project2 = []
-let project = defaultProject;
+
+class Project {
+  constructor(name) {
+    this.name = name
+    this.todos = []
+  }
+
+  addTodo(todo) {
+    this.todos.push(todo)
+  }
+
+  getTodo(todoName) {
+    return this.todos.find(todo => todo.name === todoName)
+  }
+
+  updateTodo(todoName, newName) {
+    this.todos.splice(todos.indexOf(todoName), 1, newName)
+  }
+
+  removeTodo(todoName) {
+    this.todos.splice(todos.indexOf(todoName), 1)
+  }
+}
+
+class Todo {
+  constructor(name, dueDate, priority) {
+    this.name = name
+    this.dueDate = dueDate
+    this.priority = priority
+  }
+}
+
+const todolist = new TodoList()
+const defaultProject = new Project("defaultProject")
+const todo1 = new Todo("eng homework", "12.12.2022", "Important")
+
+defaultProject.addTodo(todo1)
+todolist.addProject(defaultProject)
+
+console.log(todo1)
+console.log(defaultProject)
+console.log(todolist)
+
 
 function getTodoFromForm() {
   const form = document.querySelector("form");
-  const todoName = document.getElementById("todo-name").value;
-  const todoDate = document.getElementById("todo-date").value;
-  const todoPriority = document.getElementById("todo-priority").value;
-  addTodoToLibrary(project, todoName, todoDate, todoPriority);
-  displayTodos(project);
+  const name = document.getElementById("todo-name").value;
+  const date = document.getElementById("todo-date").value;
+  const priority = document.getElementById("todo-priority").value;
+
+  // defaultProject.addTask(new Todo(name, date, priority))
+  console.log()
   form.reset();
 }
 
-function addTodoToLibrary(project, todoName, todoDate, todoPriority) {
-  project.push(new Todo(todoName, todoDate, todoPriority));
-}
 
 const todoContainer = document.querySelector(".todo-container");
 
@@ -43,8 +95,8 @@ function displayTodos(project) {
     closeButton.innerHTML = "&times;";
     closeButton.classList.add("delete-todo");
 
-    nameButton.textContent = `${project[i].todoName}`;
-    dateButton.textContent = `${project[i].todoDate}`;
+    nameButton.textContent = ``;
+    dateButton.textContent = ``;
 
     innerDiv.appendChild(input);
     innerDiv.appendChild(nameButton);
@@ -61,7 +113,7 @@ function displayTodos(project) {
 todoContainer.addEventListener("click", (e) => {
   let i = e.target.parentElement.dataset.index;
   isDelete(e, i);
-  displayTodos(project);
+  displayTodos();
 });
 
 function isDelete(e, i) {
@@ -73,7 +125,7 @@ function isDelete(e, i) {
 const modalForm = document.querySelector(".modal-form");
 modalForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  getTodoFromForm(project);
+  getTodoFromForm();
 });
 
 function cleanTodoContainer() {
@@ -94,7 +146,10 @@ sidebar.addEventListener("click", (e) => {
     const projects = document.querySelector(".projects");
     const pbtn = document.createElement("button");
     pbtn.classList.add("project-button");
-    pbtn.textContent = prompt("project name?");
+    const pbtnText = prompt("project name?")
+
+
+    pbtn.textContent = pbtnText;
     projects.appendChild(pbtn);
   }
 });
@@ -117,5 +172,3 @@ window.addEventListener("click", (e) => {
     modal.style.display = "none";
   }
 });
-
-// SUBMIT FROM MODAL
