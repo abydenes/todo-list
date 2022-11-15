@@ -32,10 +32,10 @@ class Project {
     return this.todos.find(todo => todo.name === todoName)
   }
   updateTodo(todoName, newName) {
-    this.todos.splice(todos.indexOf(todoName), 1, newName)
+    this.todos.splice(this.todos.indexOf(todoName), 1, newName)
   }
   removeTodo(todoName) {
-    this.todos.splice(todos.indexOf(todoName), 1)
+    this.todos.splice(this.todos.indexOf(todoName), 1)
   }
 }
 
@@ -46,7 +46,6 @@ class Todo {
     this.priority = priority
   }
 }
-
 
 const todolist = new TodoList()
 const defaultProject = new Project("defaultProject")
@@ -59,20 +58,9 @@ school.addTodo(todo2)
 todolist.addProject(defaultProject)
 todolist.addProject(school)
 
-
-
 let currentProject = defaultProject
 
-function getTodoFromForm(project) {
-  const form = document.querySelector("form");
-  const name = document.getElementById("todo-name").value;
-  const date = document.getElementById("todo-date").value;
-  const priority = document.getElementById("todo-priority").value;
-
-  project.addTodo(new Todo(name, date, priority))
-  form.reset();
-}
-
+// MAIN CONTAINER
 
 const todoContainer = document.querySelector(".todo-container");
 
@@ -93,11 +81,9 @@ function displayTodos(project) {
     const closeButton = document.createElement("span");
     closeButton.innerHTML = "&times;";
     closeButton.classList.add("delete-todo");
-    // console.log(project.todos[i])
 
     nameButton.textContent = `${project.todos[i].name}`;
     dateButton.textContent = `${project.todos[i].dueDate}`;
-
 
     innerDiv.appendChild(input);
     innerDiv.appendChild(nameButton);
@@ -105,65 +91,77 @@ function displayTodos(project) {
     innerDiv2.appendChild(dateButton);
     innerDiv2.appendChild(closeButton);
     outerDiv.appendChild(innerDiv2);
-
-    outerDiv.dataset.index = `${i}`;
     todoContainer.appendChild(outerDiv);
   }
 }
 
 todoContainer.addEventListener("click", (e) => {
-  let i = e.target.parentElement.dataset.index;
-  isDelete(e, i);
+  deleteTodo(e);
   displayTodos(currentProject);
 });
 
-function isDelete(e, i) {
+function deleteTodo(e) {
   if (e.target.classList.contains("delete-todo")) {
-    e.target.parentElement.remove();
-    // currentProject.removeTodo()
+    const todoName = document.querySelector(".todo-btn")
+    e.target.parentElement.parentElement.remove();
+    currentProject.removeTodo(todoName.textContent)
+    console.log(defaultProject)
   }
 }
-const modalForm = document.querySelector(".modal-form");
-modalForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  getTodoFromForm(currentProject);
-  displayTodos(currentProject)
-});
 
 function cleanTodoContainer() {
   const container = document.querySelector(".todo-container");
   container.innerHTML = "";
 }
 
-const sidebar = document.querySelector(".sidebar");
+// SIDEBAR
 
-sidebar.addEventListener("click", (e) => {
+function changeProject(e) {
   if (e.target.classList.contains("project-button")) {
     cleanTodoContainer();
-    currentProject = todolist.getProject(e.target.textContent) 
+    currentProject = todolist.getProject(e.target.textContent)
     displayTodos(currentProject);
-
-    console.log(currentProject)
   }
+}
 
+function addNewProject(e) {
   if (e.target.classList.contains("new-project-button")) {
     const projects = document.querySelector(".projects");
     const pbtn = document.createElement("button");
     pbtn.classList.add("project-button");
     const pbtnText = prompt("project name?")
-
     todolist.addProject(new Project(pbtnText))
-
-    console.log(todolist.projects)
     pbtn.textContent = pbtnText;
     projects.appendChild(pbtn);
   }
+}
+
+document.querySelector(".sidebar").addEventListener("click", (e) => {
+  changeProject(e)
+  addNewProject(e)
 });
 
 // MODAL
+
 const modal = document.querySelector("#modal");
 const btn = document.querySelector("#modal-btn");
 const span = document.querySelector(".close");
+
+function getTodoFromForm(project) {
+  const form = document.querySelector("form");
+  const name = document.getElementById("todo-name").value;
+  const date = document.getElementById("todo-date").value;
+  const priority = document.getElementById("todo-priority").value;
+
+  project.addTodo(new Todo(name, date, priority))
+  form.reset();
+}
+
+document.querySelector(".modal-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  getTodoFromForm(currentProject);
+  displayTodos(currentProject)
+});
 
 btn.addEventListener("click", () => {
   modal.style.display = "block";
