@@ -1,59 +1,80 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Todo list</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <script defer="defer" src="index.bundle.js"></script>
-    <script defer="defer" src="manipulateDom.bundle.js"></script>
-  </head>
-  <body>
-    <div class="header">
-      <h1>todo list</h1>
-      <div>
-        <img src="" alt="" />
-        <p>Morgan Oakley</p>
-        <p>Settings</p>
-      </div>
-    </div>
-    <div class="sidebar">
-      <h2>Projects</h2>
-      <div class="projects">
-        <button class="project-button">defaultProject</button>
-        <button class="project-button">school</button>
-      </div>
-      <button class="new-project-button">add new project</button>
-    </div>
-    <div class="main-container">
-      <h2 class="project-name">defaultProject</h2>
-      <div class="todo-container"></div>
-      <button id="modal-btn">add todo</button>
-    </div>
 
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <form action="" class="modal-form">
-          <div>
-            <label for="todo-name">name</label>
-            <input type="text" name="" id="todo-name" required />
+<head>
+  <meta charset="utf-8" />
+  <title>Todo list</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script defer="defer" src="index.bundle.js"></script>
+  <script defer="defer" src="manipulateDom.bundle.js"></script>
+</head>
+
+<body>
+  <div class="header">
+    <h1>todo list</h1>
+    <div>
+      <img src="" alt="" />
+      <p>Morgan Oakley</p>
+      <p>Settings</p>
+    </div>
+  </div>
+  <div class="sidebar">
+    <h2>Projects</h2>
+    <div class="projects">
+      <button class="project-button">defaultProject</button>
+      <button class="project-button">school</button>
+    </div>
+    <button class="new-project-button">add new project</button>
+  </div>
+  <div class="main-container">
+    <div class="todo-container">
+      <div class="todo-item">
+        <div class="todo-header">
+          <h3 class="todo-name">Math homework</h3>
+          <small class="todo-desc">use turnitin to submit</small>
+        </div>
+        <!-- <div class="tasks">
+          <div class="task">
+            <input type="checkbox" name="" id="task1">
+            <label for="task1">page 1-20</label>
           </div>
-          <div>
-            <label for="todo-date">date</label>
-            <input type="date" name="" id="todo-date" />
+          <div class="task">
+            <input type="checkbox" name="" id="task1">
+            <label for="task1">write the formulas on your notebook</label>
           </div>
-          <div>
-            <label for="todo-priority">priority</label>
-            <input type="text" name="" id="todo-priority" />
-          </div>
-          <div>
-            <button type="submit" class="modal-submit">submit</button>
-          </div>
-        </form>
+        </div> -->
+        <small class="due-date">due 20.12.2022</small>
       </div>
     </div>
-    <div class="footer">
-      <p>placeholder</p>
+    <button id="modal-btn">add todo</button>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form action="" class="modal-form">
+        <div>
+          <label for="todo-name">name</label>
+          <input type="text" name="" id="todo-name" required />
+        </div>
+        <div>
+          <label for="todo-desc">description</label>
+          <input type="text" name="" id="todo-desc" />
+        </div>
+        <div>
+          <label for="todo-date">date</label>
+          <input type="date" name="" id="todo-date" />
+        </div>
+        <div>
+          <label for="todo-priority">priority</label>
+          <input type="text" name="" id="todo-priority" />
+        </div>
+        <div>
+          <button type="submit" class="modal-submit">submit</button>
+        </div>
+      </form>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
