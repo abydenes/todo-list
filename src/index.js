@@ -1,4 +1,5 @@
 import "./style.css";
+import deleteIcon from "./delete.png";
 
 class TodoList {
   constructor() {
@@ -35,7 +36,10 @@ class Project {
     this.todos.splice(this.todos.indexOf(todoName), 1, newName);
   }
   removeTodo(todoName) {
-    this.todos.splice(this.todos.indexOf(todoName), 1);
+    this.todos.splice(
+      this.todos.indexOf(this.todos.find((x) => x.name === todoName)),
+      1
+    );
   }
 }
 
@@ -61,56 +65,70 @@ todolist.addProject(school);
 
 let currentProject = defaultProject;
 
-// MAIN CONTAINER
-
-addEventListener("load", (e) => {
-  highlightCurrentProject();
-  displayTodos(currentProject); //display todos for default project on page load
-});
-
 const todoContainer = document.querySelector(".todo-container");
 
+highlightCurrentProject();
+displayTodos(currentProject); //display todos for default project on page load
+
+// MAIN CONTAINER
 function displayTodos(project) {
   todoContainer.innerHTML = "";
   for (let i = 0; i < project.todos.length; i++) {
     const todoItem = document.createElement("div");
     todoItem.classList.add("todo-item");
+    todoItem.dataset.index = `${i}`;
 
     const todoHeader = document.createElement("div");
     todoHeader.classList.add("todo-header");
 
     const todoName = document.createElement("h3");
     todoName.classList.add("todo-name");
-    // todoName.setAttribute("contenteditable", "true")
+    todoName.setAttribute("contenteditable", "true");
     todoName.textContent = `${project.todos[i].name}`;
 
     const todoDesc = document.createElement("small");
     todoDesc.classList.add("todo-desc");
-    todoDesc.textContent = `>${project.todos[i].desc}`;
+    todoDesc.setAttribute("contenteditable", "true");
+    todoDesc.textContent = `${project.todos[i].desc}`;
 
-    const small = document.createElement("small");
-    small.classList.add("due-date");
-    small.textContent = `due ${project.todos[i].dueDate}`;
+    const todoFooter = document.createElement("div");
+    todoFooter.classList.add("todo-footer");
+
+    const todoDueDate = document.createElement("input");
+    todoDueDate.classList.add("due-date");
+    todoDueDate.type = "date";
+    todoDueDate.value = `${project.todos[i].dueDate}`;
+    todoDueDate.min = "2022-11-17"; // should be today
+
+    const myIcon = new Image();
+    myIcon.classList.add("delete-icon");
+    myIcon.src = deleteIcon;
 
     todoHeader.appendChild(todoName);
     todoHeader.appendChild(todoDesc);
 
     todoItem.appendChild(todoHeader);
-    todoItem.appendChild(small);
+    todoFooter.appendChild(myIcon);
+    todoFooter.appendChild(todoDueDate);
+
+    todoItem.appendChild(todoFooter);
 
     todoContainer.appendChild(todoItem);
   }
+  saveContent();
+  console.log(currentProject.todos);
 }
 
+// delete todo
 todoContainer.addEventListener("click", (e) => {
   deleteTodo(e);
 });
 
 function deleteTodo(e) {
-  if (e.target.classList.contains("delete-todo")) {
-    const todoName = document.querySelector(".todo-btn");
-    e.target.parentElement.parentElement.remove();
-    currentProject.removeTodo(todoName.textContent);
+  if (e.target.classList.contains("delete-icon")) {
+    currentProject.removeTodo(
+      e.target.parentElement.previousSibling.firstElementChild.textContent
+    );
     displayTodos(currentProject);
   }
 }
@@ -119,8 +137,34 @@ function cleanTodoContainer() {
   document.querySelector(".todo-container").innerHTML = "";
 }
 
-// SIDEBAR
+// CONTENTEDITABLE
+function saveContent() {
+  const todonames = document.querySelectorAll(".todo-name");
+  const tododescs = document.querySelectorAll(".todo-desc");
+  const duedates = document.querySelectorAll(".due-date");
 
+  // I need to refactor these, they are repetitive
+  for (let i = 0; i < todonames.length; i++) {
+    todonames[i].addEventListener("blur", (e) => {
+      const index = e.target.parentElement.parentElement.dataset.index;
+      currentProject.todos[index].name = todonames[index].innerHTML;
+    });
+  }
+  tododescs.forEach((description) => {
+    description.addEventListener("blur", (e) => {
+      const index = e.target.parentElement.parentElement.dataset.index;
+      currentProject.todos[index].desc = tododescs[index].innerHTML;
+    });
+  });
+  duedates.forEach((date) => {
+    date.addEventListener("blur", (e) => {
+      const index = e.target.parentElement.parentElement.dataset.index;
+      currentProject.todos[index].dueDate = duedates[index].value;
+    });
+  });
+}
+
+// SIDEBAR
 function highlightCurrentProject() {
   const projectButton = document.querySelectorAll(".project-button");
   projectButton.forEach((button) => {
@@ -144,11 +188,11 @@ function addNewProject(e) {
   if (e.target.classList.contains("new-project-button")) {
     const projects = document.querySelector(".projects");
     const pbtn = document.createElement("button");
+    pbtn.textContent = "new project"
     pbtn.classList.add("project-button");
-    const pbtnText = prompt("project name?");
-    todolist.addProject(new Project(pbtnText));
-    pbtn.textContent = pbtnText;
+    todolist.addProject(new Project("new project"));
     projects.appendChild(pbtn);
+    console.log(todolist)
   }
 }
 
@@ -158,39 +202,8 @@ document.querySelector(".sidebar").addEventListener("click", (e) => {
   highlightCurrentProject(e);
 });
 
-// MODAL
-
-const modal = document.querySelector("#modal");
-const btn = document.querySelector("#modal-btn");
-const span = document.querySelector(".close");
-
-function getTodoFromForm(project) {
-  const form = document.querySelector("form");
-  const name = document.getElementById("todo-name").value;
-  const desc = document.getElementById("todo-desc").value;
-  const date = document.getElementById("todo-date").value;
-  const priority = document.getElementById("todo-priority").value;
-
-  project.addTodo(new Todo(name, desc, date, priority));
-  form.reset();
-}
-
-document.querySelector(".modal-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  getTodoFromForm(currentProject);
+// todo btn
+document.querySelector(".add-todo-btn").addEventListener("click", () => {
+  currentProject.addTodo(new Todo("title", "description", "2022-11-17", ""));
   displayTodos(currentProject);
-});
-
-btn.addEventListener("click", () => {
-  modal.style.display = "block";
-});
-
-span.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-window.addEventListener("click", (e) => {
-  if (e.target == modal) {
-    modal.style.display = "none";
-  }
 });
