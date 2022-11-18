@@ -1,5 +1,6 @@
 import "./style.css";
 import deleteIcon from "./delete.png";
+import editIcon from "./pencil-outline.png";
 
 class TodoList {
   constructor() {
@@ -13,10 +14,12 @@ class TodoList {
     return this.projects.find((project) => project.name === projectName);
   }
   updateProject(projectName, newName) {
-    this.projects.splice(this.projects.indexOf(projectName), 1, newName);
+    const index = this.projects.indexOf(this.getProject(projectName.name));
+    this.projects[index].name = newName;
   }
   removeProject(projectName) {
-    this.projects.splice(this.projects.indexOf(projectName), 1);
+    const index = this.projects.indexOf(this.getProject(projectName.name));
+    this.projects.splice(index, 1);
   }
 }
 
@@ -67,12 +70,27 @@ let currentProject = defaultProject;
 
 const todoContainer = document.querySelector(".todo-container");
 
-highlightCurrentProject();
 displayTodos(currentProject); //display todos for default project on page load
+displayProjects();
+highlightCurrentProject();
 
 // MAIN CONTAINER
+
+document.querySelector(".add-todo-btn").addEventListener("click", () => {
+  addTodo();
+});
+
+todoContainer.addEventListener("click", (e) => {
+  e.target.classList.contains("delete-icon") ? deleteTodo(e) : false;
+});
+
+function addTodo() {
+  currentProject.addTodo(new Todo("title", "description", "2022-11-17", ""));
+  displayTodos(currentProject);
+}
+
 function displayTodos(project) {
-  todoContainer.innerHTML = "";
+  cleanTodoContainer();
   for (let i = 0; i < project.todos.length; i++) {
     const todoItem = document.createElement("div");
     todoItem.classList.add("todo-item");
@@ -98,7 +116,7 @@ function displayTodos(project) {
     todoDueDate.classList.add("due-date");
     todoDueDate.type = "date";
     todoDueDate.value = `${project.todos[i].dueDate}`;
-    todoDueDate.min = "2022-11-17"; // should be today
+    todoDueDate.min = "2022-11-17"; // should be today use datefns
 
     const myIcon = new Image();
     myIcon.classList.add("delete-icon");
@@ -116,21 +134,13 @@ function displayTodos(project) {
     todoContainer.appendChild(todoItem);
   }
   saveContent();
-  console.log(currentProject.todos);
 }
 
-// delete todo
-todoContainer.addEventListener("click", (e) => {
-  deleteTodo(e);
-});
-
 function deleteTodo(e) {
-  if (e.target.classList.contains("delete-icon")) {
-    currentProject.removeTodo(
-      e.target.parentElement.previousSibling.firstElementChild.textContent
-    );
-    displayTodos(currentProject);
-  }
+  const todoName =
+    e.target.parentElement.previousSibling.firstElementChild.textContent;
+  currentProject.removeTodo(todoName);
+  displayTodos(currentProject);
 }
 
 function cleanTodoContainer() {
@@ -165,6 +175,66 @@ function saveContent() {
 }
 
 // SIDEBAR
+document.querySelector(".sidebar").addEventListener("click", (e) => {
+  e.target.classList.contains("project-button") ? changeProject(e) : false;
+  e.target.textContent == "add new project" ? addProject() : false;
+  e.target.classList.contains("edit-project") ? editProject(e) : false;
+  e.target.classList.contains("delete-project") ? deleteProject(e) : false;
+});
+//remove this
+console.log(todolist.projects);
+
+function addProject() {
+  const value = prompt("enter project name");
+  const projectBtns = Array.from(document.querySelectorAll(".project-button"));
+  if (projectBtns.every((p) => p.textContent != value)) {
+    todolist.addProject(new Project(value));
+  } else alert("no same name pls")
+  displayProjects();
+}
+
+function displayProjects() {
+  cleanProjectContainer();
+  for (let i = 0; i < todolist.projects.length; i++) {
+    const projects = document.querySelector(".project-container");
+    const projectdiv = document.createElement("div");
+
+    if (todolist.projects[i] == currentProject) {
+      const editProject = new Image();
+      editProject.classList.add("edit-project");
+      editProject.src = editIcon;
+
+      const deleteProject = new Image();
+      deleteProject.classList.add("delete-project");
+      deleteProject.src = deleteIcon;
+
+      projectdiv.appendChild(editProject);
+      projectdiv.appendChild(deleteProject);
+    }
+
+    const pbtn = document.createElement("button");
+    pbtn.textContent = `${todolist.projects[i].name}`;
+    pbtn.classList.add("project-button");
+
+    pbtn.appendChild(projectdiv);
+    projects.appendChild(pbtn);
+  }
+  highlightCurrentProject();
+}
+
+function editProject(e) {
+  todolist.updateProject(currentProject, prompt("project name pls", "project"));
+  displayProjects();
+}
+
+function deleteProject(e) {
+  todolist.removeProject(currentProject);
+  currentProject =
+    todolist.projects[todolist.projects.indexOf(currentProject) + 1];
+  displayProjects();
+  displayTodos(currentProject);
+}
+
 function highlightCurrentProject() {
   const projectButton = document.querySelectorAll(".project-button");
   projectButton.forEach((button) => {
@@ -177,33 +247,12 @@ function highlightCurrentProject() {
 }
 
 function changeProject(e) {
-  if (e.target.classList.contains("project-button")) {
-    cleanTodoContainer();
-    currentProject = todolist.getProject(e.target.textContent);
-    displayTodos(currentProject);
-  }
-}
-
-function addNewProject(e) {
-  if (e.target.classList.contains("new-project-button")) {
-    const projects = document.querySelector(".projects");
-    const pbtn = document.createElement("button");
-    pbtn.textContent = "new project"
-    pbtn.classList.add("project-button");
-    todolist.addProject(new Project("new project"));
-    projects.appendChild(pbtn);
-    console.log(todolist)
-  }
-}
-
-document.querySelector(".sidebar").addEventListener("click", (e) => {
-  changeProject(e);
-  addNewProject(e);
-  highlightCurrentProject(e);
-});
-
-// todo btn
-document.querySelector(".add-todo-btn").addEventListener("click", () => {
-  currentProject.addTodo(new Todo("title", "description", "2022-11-17", ""));
+  currentProject = todolist.getProject(e.target.textContent);
   displayTodos(currentProject);
-});
+  highlightCurrentProject();
+  displayProjects();
+}
+
+function cleanProjectContainer() {
+  document.querySelector(".project-container").innerHTML = "";
+}

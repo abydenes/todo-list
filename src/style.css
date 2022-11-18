@@ -50,20 +50,46 @@ body {
   text-align: left;
 }
 
-.sidebar button:hover {
-  cursor: pointer;
-  background-color: rgb(129, 129, 129);
-}
-
-.projects {
+.project-container {
   margin: 16px 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.projects p {
+.project-container p {
   margin-bottom: 8px;
+}
+
+.project-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
+  border-radius: 5px;
+}
+
+.project-button:hover {
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.project-button img {
+  opacity: 50%;
+  width: 20px;
+}
+
+.project-button img:hover {
+  width: 22px;
+}
+
+.new-project-button {
+  outline: 1px solid black;
+  border-radius: 5px;
+}
+.new-project-button:hover {
+  cursor: pointer;
+  background-color: rgb(176, 176, 176);;
 }
 
 .main-container {
@@ -139,7 +165,7 @@ body {
 }
 .delete-icon:hover {
   background: #b9b9b9;
-  
+
   border-radius: 50%;
 }
 
