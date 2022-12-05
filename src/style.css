@@ -180,7 +180,6 @@ body {
 }
 
 .todo-right {
-  width: 9vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -192,14 +191,11 @@ body {
   cursor: pointer;
 }
 
-.delete-icon:hover {
-  width: 22px;
-}
-
 .due-date {
   background-color: #e5d3ed;
   border: none;
   width: 100px;
+  overflow:visible;
 }
 
 .due-date:hover {

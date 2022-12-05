@@ -1,22 +1,24 @@
+import Task from "./task";
+
 export default class Project {
   constructor(name) {
     this.name = name;
-    this.todos = [];
+    this.tasks = [];
+    this.tasks.push(new Task("placeholder task"))
   }
 
-  addTodo(todo) {
-    this.todos.push(todo);
-  }
-  getTodo(todoName) {
-    return this.todos.find((todo) => todo.name === todoName);
-  }
-  updateTodo(todoName, newName) {
-    this.todos.splice(this.todos.indexOf(todoName), 1, newName);
-  }
-  removeTodo(todoName) {
+  getName = () => this.name;
+
+  setName = (name) => (this.name = name);
+
+  addTask = (task, dueDate) => this.tasks.push(new Task(task, dueDate));
+
+  getTask = (name) => this.tasks.find((task) => task.getName() === name); 
+
+  deleteTask = (name) => {
     this.todos.splice(
-      this.todos.indexOf(this.todos.find((x) => x.name === todoName)),
+      this.todos.indexOf(this.todos.find((x) => x.name === name)),
       1
     );
-  }
+  };
 }

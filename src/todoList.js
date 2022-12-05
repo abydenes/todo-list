@@ -1,20 +1,24 @@
+import Project from "./project";
+
 export default class TodoList {
   constructor() {
     this.projects = [];
+    this.projects.push(new Project("default"));
+    this.projects.push(new Project("another project"));
   }
 
-  addProject(project) {
-    this.projects.push(project);
-  }
-  getProject(projectName) {
-    return this.projects.find((project) => project.name === projectName);
-  }
-  updateProject(projectName, newName) {
-    const index = this.projects.indexOf(this.getProject(projectName.name));
-    this.projects[index].name = newName;
-  }
-  removeProject(projectName) {
-    const index = this.projects.indexOf(this.getProject(projectName.name));
-    this.projects.splice(index, 1);
-  }
+  getTodoList = () => this.projects;
+
+  addProject = (project) => this.projects.push(new Project(project));
+
+  getProject = (name) => {
+    this.projects.find((project) => project.getName() === name);
+  };
+
+  deleteProject = (name) => {
+    this.projects.splice(
+      this.projects.indexOf(this.projects.find((x) => x.name === name)),
+      1
+    );
+  };
 }
