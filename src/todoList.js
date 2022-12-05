@@ -12,7 +12,7 @@ export default class TodoList {
   addProject = (project) => this.projects.push(new Project(project));
 
   getProject = (name) => {
-    this.projects.find((project) => project.getName() === name);
+    return this.projects.find((project) => project.getName() === name);
   };
 
   deleteProject = (name) => {

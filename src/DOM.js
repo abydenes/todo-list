@@ -12,7 +12,6 @@ export default class DOM {
   static todoContainer = document.querySelector(".todo-container");
 
   static init() {
-    console.log(DOM.todolist.getProject("default"));
     DOM.displayTodos(DOM.currentProject);
     DOM.displayProjects();
     DOM.highlightCurrentProject();
@@ -24,7 +23,7 @@ export default class DOM {
       DOM.addTodo();
     });
 
-    todoContainer.addEventListener("click", (e) => {
+    DOM.todoContainer.addEventListener("click", (e) => {
       e.target.classList.contains("delete-icon") ? DOM.deleteTodo(e) : false;
       e.target.classList.contains("todo-checkbox") ? DOM.checkTodo(e) : false;
     });
@@ -39,13 +38,13 @@ export default class DOM {
 
   static checkTodo(e) {
     if (e.target.checked) {
-      currentProject.removeTodo(e.target.nextElementSibling.textContent);
+      DOM.currentProject.removeTodo(e.target.nextElementSibling.textContent);
       DOM.displayTodos(DOM.currentProject);
     }
   }
 
   static addTodo() {
-    DOM.currentProject.addTodo("name", "2022-11-17");
+    DOM.currentProject.addTask("name", "2022-11-17");
     DOM.displayTodos(DOM.currentProject);
   }
 
@@ -87,7 +86,7 @@ export default class DOM {
       todoRight.appendChild(todoDueDate);
       todoRight.appendChild(myIcon);
       todoItem.appendChild(todoRight);
-      todoContainer.appendChild(todoItem);
+      DOM.todoContainer.appendChild(todoItem);
     }
     DOM.saveContent();
   }
@@ -152,7 +151,7 @@ export default class DOM {
       }
 
       const pbtn = document.createElement("button");
-      pbtn.textContent = `${todolist.projects[i].name}`;
+      pbtn.textContent = `${DOM.todolist.projects[i].name}`;
       pbtn.classList.add("project-button");
 
       pbtn.appendChild(projectdiv);
