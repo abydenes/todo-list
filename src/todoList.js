@@ -9,10 +9,19 @@ export default class TodoList {
 
   getTodoList = () => this.projects;
 
-  addProject = (project) => this.projects.push(new Project(project));
+  addProject = (project) => {
+    if (!this.getProject(project) && project) {
+      this.projects.push(new Project(project));
+    }
+  };
 
   getProject = (name) => {
     return this.projects.find((project) => project.getName() === name);
+  };
+
+  updateProject = (name, newName) => {
+    const index = this.projects.indexOf(this.getProject(name));
+    this.projects[index].setName(newName);
   };
 
   deleteProject = (name) => {

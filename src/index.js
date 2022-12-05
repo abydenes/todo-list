@@ -1,5 +1,3 @@
-import DOM from "./DOM.js";
+import { init } from "./DOM.js";
 
-DOM.init();
-
-DOM.addInitialListeners();
+init();

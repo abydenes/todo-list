@@ -16,8 +16,8 @@ export default class Project {
   getTask = (name) => this.tasks.find((task) => task.getName() === name); 
 
   deleteTask = (name) => {
-    this.todos.splice(
-      this.todos.indexOf(this.todos.find((x) => x.name === name)),
+    this.tasks.splice(
+      this.tasks.indexOf(this.tasks.find((x) => x.name === name)),
       1
     );
   };
