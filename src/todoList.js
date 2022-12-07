@@ -15,6 +15,10 @@ export default class TodoList {
     }
   };
 
+  getProjects = () => this.projects;
+
+  setProjects = (project) => (this.projects = project);
+
   getProject = (name) => {
     return this.projects.find((project) => project.getName() === name);
   };
