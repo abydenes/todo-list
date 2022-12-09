@@ -37,7 +37,7 @@ function addTask() {
   Storage.addTask(
     document.querySelector(".project-name").textContent,
     "taask",
-    "12.12.2022"
+    "2022-12-25"
   );
   displayTasks();
 }

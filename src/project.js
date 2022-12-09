@@ -4,7 +4,7 @@ export default class Project {
   constructor(name) {
     this.name = name;
     this.tasks = [];
-    this.tasks.push(new Task("placeholder task", "12.12.2022"));
+    this.tasks.push(new Task("placeholder task", "2022-12-25"));
   }
 
   getTasks = () => this.tasks;
