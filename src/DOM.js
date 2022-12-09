@@ -6,11 +6,10 @@ import editIcon from "./pencil-outline.png";
 export function init() {
   displayProjects();
   displayTasks();
-  // highlightCurrentProject();
+  highlightCurrentProject();
   addInitialListeners();
+  saveContent();
 }
-
-let currentProject = Storage.getTodoList().getProject("default");
 
 function addInitialListeners() {
   const todoContainer = document.querySelector(".todo-container");
@@ -35,7 +34,11 @@ function addInitialListeners() {
 function checkTodo(e) {}
 
 function addTask() {
-  Storage.addTask(document.querySelector(".project-name").textContent, "task");
+  Storage.addTask(
+    document.querySelector(".project-name").textContent,
+    "taask",
+    "12.12.2022"
+  );
   displayTasks();
 }
 
@@ -83,9 +86,49 @@ function displayTasks() {
     todoItem.appendChild(todoRight);
     todoContainer.appendChild(todoItem);
   }
+  saveContent();
 }
 
-function deleteTask(e) {}
+function deleteTask(e) {
+  const taskName =
+    e.target.parentElement.parentElement.childNodes[0].textContent;
+  Storage.deleteTask(
+    document.querySelector(".project-name").textContent,
+    taskName
+  );
+  displayTasks();
+}
+
+function saveContent() {
+  const projectName = document.querySelector(".project-name").textContent;
+  const todonames = document.querySelectorAll(".todo-name");
+  const duedates = document.querySelectorAll(".due-date");
+
+  // I need to refactor these, they are repetitive
+  for (let i = 0; i < todonames.length; i++) {
+    todonames[i].addEventListener("blur", (e) => {
+      const index = e.target.parentElement.parentElement.dataset.index;
+      Storage.renameTask(
+        projectName,
+        Storage.getTodoList().getProject(projectName).getTasks()[index].name,
+        todonames[index].innerHTML
+      );
+    });
+  }
+  // for (let i = 0; i < duedates.length; i++) {
+  //   duedates[i].addEventListener("blur", (e) => {
+  //     const index = e.target.parentElement.parentElement.dataset.index;
+  //     Storage.setDueDate(
+  //       projectName,
+  //       Storage.getTodoList().getProject(projectName).getTasks()[index].name,
+  //       duedates[index].innerHTML
+  //     );
+  //     console.log(
+  //       Storage.getTodoList().getProject(projectName).getTasks()[index]
+  //     );
+  //   });
+  // }
+}
 
 function cleanTodoContainer() {
   document.querySelector(".todo-container").innerHTML = "";
@@ -99,20 +142,23 @@ function addProject() {
 function displayProjects() {
   cleanProjectContainer();
   const projects = Storage.getTodoList().getProjects();
+  const projectName = document.querySelector(".project-name").textContent;
   for (let i = 0; i < projects.length; i++) {
     const projectsContainer = document.querySelector(".project-container");
     const projectDiv = document.createElement("div");
 
-    const editProject = new Image();
-    editProject.classList.add("edit-project");
-    editProject.src = editIcon;
+    if (projects[i].getName() === projectName) {
+      const editProject = new Image();
+      editProject.classList.add("edit-project");
+      editProject.src = editIcon;
 
-    const deleteProject = new Image();
-    deleteProject.classList.add("delete-project");
-    deleteProject.src = deleteIcon;
+      const deleteProject = new Image();
+      deleteProject.classList.add("delete-project");
+      deleteProject.src = deleteIcon;
 
-    projectDiv.appendChild(editProject);
-    projectDiv.appendChild(deleteProject);
+      projectDiv.appendChild(editProject);
+      projectDiv.appendChild(deleteProject);
+    }
 
     const pbtn = document.createElement("button");
     pbtn.textContent = `${projects[i].name}`;
@@ -131,16 +177,27 @@ function displayProjectName(name) {
 
 function editProject() {}
 
-function deleteProject(e) {}
+function deleteProject(e) {
+  const projectName = e.target.parentElement.parentElement.textContent;
+  Storage.deleteProject(projectName);
+  displayProjects();
+}
 
 function highlightCurrentProject() {
+  const projectName = document.querySelector(".project-name").textContent;
   const projectButton = document.querySelectorAll(".project-button");
+  projectButton.forEach((button) => {
+    if (button.textContent == projectName) {
+      button.style.backgroundColor = "white";
+    } else button.style.backgroundColor = "unset";
+  });
 }
 
 function changeProject(e) {
-  currentProject = Storage.getTodoList().getProject(e.target.textContent);
   displayProjectName(e.target.textContent);
+  displayProjects();
   displayTasks();
+  highlightCurrentProject();
 }
 
 function cleanProjectContainer() {

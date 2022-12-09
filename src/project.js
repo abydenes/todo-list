@@ -4,7 +4,7 @@ export default class Project {
   constructor(name) {
     this.name = name;
     this.tasks = [];
-    this.tasks.push(new Task("placeholder task"));
+    this.tasks.push(new Task("placeholder task", "12.12.2022"));
   }
 
   getTasks = () => this.tasks;
@@ -15,7 +15,7 @@ export default class Project {
 
   setName = (name) => (this.name = name);
 
-  addTask = (task) => this.tasks.push(new Task(task, "12.12.2022"));
+  addTask = (task, date) => this.tasks.push(new Task(task, date));
 
   getTask = (name) => this.tasks.find((task) => task.getName() === name);
 
