@@ -36,8 +36,8 @@ function checkTodo(e) {}
 function addTask() {
   Storage.addTask(
     document.querySelector(".project-name").textContent,
-    "taask",
-    "2022-12-25"
+    prompt("task name pls?"),
+    "undefined"
   );
   displayTasks();
 }
@@ -87,6 +87,7 @@ function displayTasks() {
     todoContainer.appendChild(todoItem);
   }
   saveContent();
+  console.log(Storage.getTodoList().getProject(projectName).getTasks());
 }
 
 function deleteTask(e) {
@@ -100,34 +101,27 @@ function deleteTask(e) {
 }
 
 function saveContent() {
+  const todoNames = document.querySelectorAll(".todo-name");
+  const dueDates = document.querySelectorAll(".due-date");
   const projectName = document.querySelector(".project-name").textContent;
-  const todonames = document.querySelectorAll(".todo-name");
-  const duedates = document.querySelectorAll(".due-date");
 
-  // I need to refactor these, they are repetitive
-  for (let i = 0; i < todonames.length; i++) {
-    todonames[i].addEventListener("blur", (e) => {
-      const index = e.target.parentElement.parentElement.dataset.index;
-      Storage.renameTask(
-        projectName,
-        Storage.getTodoList().getProject(projectName).getTasks()[index].name,
-        todonames[index].innerHTML
-      );
+  for (let i = 0; i < todoNames.length; i++) {
+    todoNames[i].addEventListener("blur", () => {
+      const oldTaskName = Storage.getTodoList()
+        .getProject(projectName)
+        .getTasks()
+        [i].getName();
+      Storage.renameTask(projectName, oldTaskName, todoNames[i].textContent);
+    });
+
+    dueDates[i].addEventListener("blur", () => {
+      const TaskName = Storage.getTodoList()
+        .getProject(projectName)
+        .getTasks()
+        [i].getName();
+      Storage.setDueDate(projectName, TaskName, dueDates[i].value);
     });
   }
-  // for (let i = 0; i < duedates.length; i++) {
-  //   duedates[i].addEventListener("blur", (e) => {
-  //     const index = e.target.parentElement.parentElement.dataset.index;
-  //     Storage.setDueDate(
-  //       projectName,
-  //       Storage.getTodoList().getProject(projectName).getTasks()[index].name,
-  //       duedates[index].innerHTML
-  //     );
-  //     console.log(
-  //       Storage.getTodoList().getProject(projectName).getTasks()[index]
-  //     );
-  //   });
-  // }
 }
 
 function cleanTodoContainer() {
