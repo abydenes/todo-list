@@ -63,7 +63,7 @@ function displayTasks() {
     const todoName = document.createElement("h3");
     todoName.classList.add("todo-name");
     todoName.setAttribute("contenteditable", "true");
-    todoName.textContent = `${tasks[i].name}`;
+    todoName.textContent = `${tasks[i].getName()}`;
 
     const todoRight = document.createElement("div");
     todoRight.classList.add("todo-right");
@@ -71,7 +71,7 @@ function displayTasks() {
     const todoDueDate = document.createElement("input");
     todoDueDate.classList.add("due-date");
     todoDueDate.type = "date";
-    todoDueDate.value = `${tasks[i].dueDate}`;
+    todoDueDate.value = `${tasks[i].getDate()}`;
     todoDueDate.min = "2022-11-17"; // should be today use datefns
 
     const myIcon = new Image();
