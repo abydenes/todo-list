@@ -34,9 +34,11 @@ function addInitialListeners() {
 function checkTodo(e) {}
 
 function addTask() {
+  const projectName = document.querySelector(".project-name").textContent;
+  const index = Storage.getTodoList().getProject(projectName).getTasks().length;
   Storage.addTask(
     document.querySelector(".project-name").textContent,
-    prompt("task name pls?"),
+    `task${index}`,
     "undefined"
   );
   displayTasks();
@@ -48,7 +50,7 @@ function displayTasks() {
   const tasks = Storage.getTodoList().getProject(projectName).getTasks();
   cleanTodoContainer();
 
-  for (let i = 0; i < tasks.length; i++) {
+  for (let i = tasks.length - 1; i >= 0; i--) {
     const todoItem = document.createElement("div");
     todoItem.classList.add("todo-item");
     todoItem.dataset.index = `${i}`;
@@ -87,7 +89,6 @@ function displayTasks() {
     todoContainer.appendChild(todoItem);
   }
   saveContent();
-  console.log(Storage.getTodoList().getProject(projectName).getTasks());
 }
 
 function deleteTask(e) {
@@ -104,13 +105,15 @@ function saveContent() {
   const todoNames = document.querySelectorAll(".todo-name");
   const dueDates = document.querySelectorAll(".due-date");
   const projectName = document.querySelector(".project-name").textContent;
+  const todoItems = document.querySelectorAll(".todo-item");
 
-  for (let i = 0; i < todoNames.length; i++) {
+  for (let i = todoNames.length - 1; i >= 0; i--) {
+    const itemIndex = todoItems[i].dataset.index;
     todoNames[i].addEventListener("blur", () => {
       const oldTaskName = Storage.getTodoList()
         .getProject(projectName)
         .getTasks()
-        [i].getName();
+        [itemIndex].getName();
       Storage.renameTask(projectName, oldTaskName, todoNames[i].textContent);
     });
 
@@ -118,7 +121,7 @@ function saveContent() {
       const TaskName = Storage.getTodoList()
         .getProject(projectName)
         .getTasks()
-        [i].getName();
+        [itemIndex].getName();
       Storage.setDueDate(projectName, TaskName, dueDates[i].value);
     });
   }
@@ -129,7 +132,8 @@ function cleanTodoContainer() {
 }
 
 function addProject() {
-  Storage.addProject(prompt("project name pls"));
+  const index = Storage.getTodoList().getProjects().length;
+  Storage.addProject(`project${index + 1}`);
   displayProjects();
 }
 
@@ -169,7 +173,11 @@ function displayProjectName(name) {
   projectName.textContent = name;
 }
 
-function editProject() {}
+function editProject() {
+  const projectName = document.querySelector(".project-name").textContent;
+  Storage.renameProject(projectName, prompt("insert new project name"))
+  displayProjects();
+}
 
 function deleteProject(e) {
   const projectName = e.target.parentElement.parentElement.textContent;

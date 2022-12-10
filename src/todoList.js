@@ -23,8 +23,10 @@ export default class TodoList {
     return this.projects.find((project) => project.getName() === name);
   };
 
-  updateProject = (name, newName) => {
+  renameProject = (name, newName) => {
     const index = this.projects.indexOf(this.getProject(name));
+    if (this.projects.find((x) => x.name == newName)) return;
+    if (!name) return;
     this.projects[index].setName(newName);
   };
 
