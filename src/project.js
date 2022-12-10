@@ -19,7 +19,7 @@ export default class Project {
     if (!this.getTask(task) && task) {
       this.tasks.push(new Task(task, date));
     }
-  }
+  };
 
   getTask = (name) => this.tasks.find((task) => task.getName() === name);
 
