@@ -32,7 +32,6 @@ function addInitialListeners() {
 }
 
 function checkTodo(e) {
-  // this should move the task to another list below the task, with a strikethrough effect
   if (e.target.checked) {
     deleteTask(e);
   }
@@ -55,26 +54,44 @@ function displayTasks() {
   const tasks = Storage.getTodoList().getProject(projectName).getTasks();
   cleanTodoContainer();
 
-  const todoItemsHtml = tasks
-    .map(
-      (task, i) => `
-    <div class="todo-item" data-index="${i}">
-      <div class="todo-left">
-        <input type="checkbox" class="todo-checkbox" />
-        <h3 class="todo-name" contenteditable="true">${task.getName()}</h3>
-      </div>
-      <div class="todo-right">
-        <input type="date" class="due-date" value="${task.getDate()}" min="2022-11-17" />
-        <img class="delete-icon" src="./delete.png" />
-      </div>
-    </div>
-  `
-    )
-    .join("");
+  for (let i = tasks.length - 1; i >= 0; i--) {
+    const todoItem = document.createElement("div");
+    todoItem.classList.add("todo-item");
+    todoItem.dataset.index = `${i}`;
 
-  // Use the innerHTML property to insert the elements into the DOM
-  todoContainer.innerHTML = todoItemsHtml;
+    const todoLeft = document.createElement("div");
+    todoLeft.classList.add("todo-left");
 
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.classList.add("todo-checkbox");
+
+    const todoName = document.createElement("h3");
+    todoName.classList.add("todo-name");
+    todoName.setAttribute("contenteditable", "true");
+    todoName.textContent = `${tasks[i].getName()}`;
+
+    const todoRight = document.createElement("div");
+    todoRight.classList.add("todo-right");
+
+    const todoDueDate = document.createElement("input");
+    todoDueDate.classList.add("due-date");
+    todoDueDate.type = "date";
+    todoDueDate.value = `${tasks[i].getDate()}`;
+    todoDueDate.min = "2022-11-17"; // should be today use datefns
+
+    const myIcon = new Image();
+    myIcon.classList.add("delete-icon");
+    myIcon.src = deleteIcon;
+
+    todoLeft.appendChild(checkbox);
+    todoLeft.appendChild(todoName);
+    todoItem.appendChild(todoLeft);
+    todoRight.appendChild(todoDueDate);
+    todoRight.appendChild(myIcon);
+    todoItem.appendChild(todoRight);
+    todoContainer.appendChild(todoItem);
+  }
   saveContent();
 }
 
