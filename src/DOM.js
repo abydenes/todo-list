@@ -1,5 +1,6 @@
 import "./style.css";
 import Storage from "./storage";
+// I should probably use fontawesome for the icons to reduce bloat
 import deleteIcon from "./delete.png";
 import editIcon from "./pencil-outline.png";
 
@@ -8,6 +9,7 @@ export function init() {
   displayTasks();
   highlightCurrentProject();
   addInitialListeners();
+  // Maybe saveContent can go inside addInitialListeners
   saveContent();
 }
 
