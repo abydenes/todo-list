@@ -31,7 +31,11 @@ function addInitialListeners() {
   });
 }
 
-function checkTodo(e) {}
+function checkTodo(e) {
+  if (e.target.checked) {
+    deleteTask(e);
+  }
+}
 
 function addTask() {
   const projectName = document.querySelector(".project-name").textContent;
@@ -175,7 +179,7 @@ function displayProjectName(name) {
 
 function editProject() {
   const projectName = document.querySelector(".project-name").textContent;
-  Storage.renameProject(projectName, prompt("insert new project name"))
+  Storage.renameProject(projectName, prompt("insert new project name"));
   displayProjects();
 }
 
